@@ -1,10 +1,11 @@
-import styled from "styled-components";
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 
 interface Pages {
-  home: boolean;
-  destination: boolean;
-  contact: boolean;
-  offers: boolean;
+  home: boolean
+  destination: boolean
+  contact: boolean
+  offers: boolean
 }
 
 const InfoContainer = styled.div`
@@ -14,7 +15,7 @@ const InfoContainer = styled.div`
   right: 140px;
   bottom: 90px;
   display: flex;
-`;
+`
 
 const PresentationContainer = styled.div`
   margin-left: 0px;
@@ -27,7 +28,7 @@ const PresentationContainer = styled.div`
   justify-content: center;
   position: absolute;
   text-shadow: 1.5px 1.5px 2px rgba(0, 0, 0, 0.5);
-`;
+`
 
 const PictureContainer = styled.div`
   position: absolute;
@@ -40,7 +41,7 @@ const PictureContainer = styled.div`
   box-shadow:
     0 4px 8px 0 rgba(0, 0, 0, 0.2),
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
-`;
+`
 
 const InfoButton = styled.div`
   width: 200px;
@@ -60,7 +61,7 @@ const InfoButton = styled.div`
     opacity: 0.8;
     cursor: pointer;
   }
-`;
+`
 
 const ImageStyle = styled.img`
   width: auto;
@@ -69,35 +70,33 @@ const ImageStyle = styled.img`
   box-shadow:
     0 4px 8px 0 rgba(0, 0, 0, 0.2),
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
-`;
+`
 
-const Home = ({
-  setPages,
-}: {
-  setPages: React.Dispatch<React.SetStateAction<Pages>>;
-}) => {
+const Home = ({ setPages }: { setPages: React.Dispatch<React.SetStateAction<Pages>> }) => {
+  const navigate = useNavigate()
   return (
     <InfoContainer>
       <PresentationContainer>
         <h1>Explore Beyond the Horizon: Where Adventures Await!</h1>
         <p>Discover Your Path to Unforgettable Journeys! Book with us!</p>
         <InfoButton
-          onClick={() =>
+          onClick={() => {
+            navigate('/destination')
             setPages({
               home: false,
               destination: true,
               contact: false,
-              offers: true,
+              offers: true
             })
-          }
+          }}
         >
           See More!
         </InfoButton>
       </PresentationContainer>
-      <PictureContainer id="picture">
-        <ImageStyle src="src/assets/pictureA.png" alt="travel" />
+      <PictureContainer id='picture'>
+        <ImageStyle src='src/assets/pictureA.png' alt='travel' />
       </PictureContainer>
     </InfoContainer>
-  );
-};
-export default Home;
+  )
+}
+export default Home
