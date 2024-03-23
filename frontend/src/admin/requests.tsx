@@ -24,7 +24,6 @@ export const add = async (value: CardInfo) => {
 
   if (response?.ok) {
     if (response.status !== 204) {
-      const data = await (response as Response).json()
       window.location.reload()
     }
   }
@@ -41,7 +40,6 @@ export const update = async (value: CardInfo) => {
 
   if (response?.ok) {
     if (response.status !== 204) {
-      const data = await (response as Response).json()
       window.location.reload()
     }
   }
@@ -49,15 +47,10 @@ export const update = async (value: CardInfo) => {
 
 export const remove = async (value: CardInfo) => {
   const param = encodeURIComponent(value.name)
-  const response = await fetch(`http://localhost:8000/api/v1/destinations/${param}/`, {
+  await fetch(`http://localhost:8000/api/v1/destinations/${param}/`, {
     method: 'DELETE'
   }).catch((error) => {
     console.error('Error:', error)
   })
-  if (response?.ok) {
-    if (response.status !== 204) {
-      const data = await (response as Response).json()
-    }
-  }
   window.location.reload()
 }

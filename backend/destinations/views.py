@@ -5,8 +5,11 @@ from .models import Destination
 from .serializers import DestinationSerializer
 from django.db.models import Q
 from urllib.parse import unquote
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 class DestinationFilter(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, location, format=None):
         print(f"Location: {location}")
         if location:
@@ -21,6 +24,14 @@ class DestinationFilter(APIView):
             return Response({"error": "No destinations found."}, status=status.HTTP_404_NOT_FOUND)
 
 class DestinationList(APIView):
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticated()]  # For GET requests, require authentication
+        elif self.request.method == 'POST':
+            return [IsAdminUser()]       # For POST requests, require admin privileges
+        else:
+            return []
+
     def get(self, request, format=None):
         destinations = Destination.objects.all()
         serializer = DestinationSerializer(destinations, many=True)
@@ -35,6 +46,8 @@ class DestinationList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DestinationDetail(APIView):
+    permission_classes = [IsAdminUser]
+
     def get_object(self, id, format=None):
         try:
             return Destination.objects.get(pk=id)

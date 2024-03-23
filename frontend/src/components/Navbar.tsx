@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { TextField } from '@mui/material'
 import { Link } from 'react-router-dom'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import AuthContext from '../context/AuthContext'
 import { JwtPayload } from 'jwt-decode'
 
@@ -116,36 +116,39 @@ const NavBar = ({
   setLocation: React.Dispatch<React.SetStateAction<string>>
 }) => {
   const { user, logout } = useContext(AuthContext) || {}
-  function handlePages(page: string) {
+
+  function handlePagesWithParams(page: string) {
     let newPages: Pages = {
-      home: page === '/',
+      home: page === '/home',
       destination: page === '/destination',
       contact: page === '/contact',
-      offers: false
+      offers: page === '/destination'
     }
     newPages = {
       ...newPages,
-      offers: page === '/destination',
       [page]: true
     }
     setPages(newPages)
   }
 
-  useEffect(() => {
-    handlePages(window.location.pathname)
-  }, [])
-
   return (
     <NavBarContainer>
       <link href='https://fonts.googleapis.com/css2?family=Staatliches&display=swap' rel='stylesheet'></link>
       <Link style={LinkStyle} to='/'>
-        <Logo src='src/assets/tu-rizzm-logo.png' onClick={() => handlePages('home')} />
+        <Logo src='src/assets/tu-rizzm-logo.png' onClick={() => handlePagesWithParams('/home')} />
       </Link>
       <Link style={LinkStyle} to='/login'>
-        <Profile user={user ?? {}} src='src/assets/user.png' onClick={logout} />
+        <Profile
+          user={user ?? {}}
+          src='src/assets/user.png'
+          onClick={() => {
+            user && logout && logout()
+            handlePagesWithParams('/login')
+          }}
+        />
       </Link>
       <Link style={LinkStyle} to='/contact'>
-        <Contact id={`${pages.contact}`} onClick={() => handlePages('contact')}>
+        <Contact id={`${pages.contact}`} onClick={() => handlePagesWithParams('/contact')}>
           CONTACT
         </Contact>
       </Link>
@@ -178,7 +181,7 @@ const NavBar = ({
           id={`${pages.destination}`}
           className={`${pages.destination}`}
           onClick={() => {
-            handlePages('destination')
+            handlePagesWithParams('/destination')
             handleScroll('destination')
           }}
         >
@@ -186,7 +189,7 @@ const NavBar = ({
         </Destination>
       </Link>
       <Link style={LinkStyle} to='/'>
-        <Home className={pages.destination.toString()} id={`${pages.home}`} onClick={() => handlePages('home')}>
+        <Home className={pages.destination.toString()} id={`${pages.home}`} onClick={() => handlePagesWithParams('home')}>
           HOME
         </Home>
       </Link>

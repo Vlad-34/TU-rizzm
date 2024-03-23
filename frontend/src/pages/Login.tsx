@@ -1,8 +1,8 @@
-import { useContext } from 'react'
+import { FormEventHandler, useContext } from 'react'
 import AuthContext from '../context/AuthContext'
 
 const Login = () => {
-  let { loginUser } = useContext(AuthContext)
+  const { loginUser } = useContext(AuthContext) as unknown as { loginUser: FormEventHandler<HTMLFormElement> }
   return (
     <form onSubmit={loginUser}>
       <label>

@@ -1,4 +1,4 @@
-# DAWEB_30643_Ursache_Vlad_Assignment2
+# DAWEB_30643_Ursache_Vlad_Assignment3
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/daweb_30643_ursache_vlad/daweb_30643_ursache_vlad_assignment2.git
+git remote add origin https://gitlab.com/daweb_30643_ursache_vlad/daweb_30643_ursache_vlad_assignment3.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/daweb_30643_ursache_vlad/daweb_30643_ursache_vlad_assignment2/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.com/daweb_30643_ursache_vlad/daweb_30643_ursache_vlad_assignment3/-/settings/integrations)
 
 ## Collaborate with your team
 

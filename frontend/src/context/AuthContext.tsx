@@ -1,13 +1,12 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useEffect, useState } from 'react'
 import { JwtPayload, jwtDecode } from 'jwt-decode'
 import 'core-js/stable/atob'
-import { useNavigate } from 'react-router-dom'
 
 const AuthContext = createContext<{
   user: JwtPayload | null
-  loginUser: (e: any) => Promise<any>
+  loginUser: (e: Event) => Promise<Response>
   logout: () => void
-  registerUser: (e: any) => Promise<void>
+  registerUser: (e: Event) => Promise<Response>
   authTokens: {
     access: string
     refresh: string
@@ -16,47 +15,49 @@ const AuthContext = createContext<{
 
 export default AuthContext
 
-const loginUser = async (e: any) => {
+const loginUser = async (e: Event) => {
   e.preventDefault()
-  const response = await fetch('http://127.0.0.1:8000/api/v1/auth/token/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ username: e.target.username.value, password: e.target.password.value })
-  })
-  const data = await response.json()
-  if (response.ok) {
-    localStorage.setItem('tokens', JSON.stringify(data))
-    return data
-  } else {
-    console.error('error')
-    return null
+  if (e.target instanceof HTMLFormElement) {
+    const response = await fetch('http://127.0.0.1:8000/api/v1/auth/token/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username: e.target.username.value, password: e.target.password.value })
+    })
+    const data = await response.json()
+    if (response.ok) {
+      localStorage.setItem('tokens', JSON.stringify(data))
+      window.location.pathname = '/destination'
+      return data
+    } else {
+      console.error('error')
+      return null
+    }
   }
 }
 
-const registerUser = async (e: any) => {
+const registerUser = async (e: Event) => {
   e.preventDefault()
-  const response = await fetch('http://127.0.0.1:8000/api/v1/users/register/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ username: e.target.username.value, password: e.target.password.value, email: e.target.email.value })
-  })
-  const data = await response.json()
-  window.location.reload()
-  if (response.ok) {
-    loginUser(e)
-  } else {
-    console.error('error')
+  if (e.target instanceof HTMLFormElement) {
+    const response = await fetch('http://127.0.0.1:8000/api/v1/users/register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username: e.target.username.value, password: e.target.password.value, email: e.target.email.value })
+    })
+    if (response.ok) {
+      window.location.pathname = '/login'
+    } else {
+      console.error('error')
+    }
   }
 }
 
-export const AuthProvider = ({ children, e }: { children: React.ReactNode; e: any }) => {
+export const AuthProvider = ({ children, e }: { children: React.ReactNode; e: Event }) => {
   const [authTokens, setAuthTokens] = useState<{ access: string; refresh: string } | null>(null)
   const [user, setUser] = useState<JwtPayload | null>(null)
-  const navigate = useNavigate()
 
   useEffect(() => {
     let tokens: { access: string; refresh: string } = { access: '', refresh: '' }
@@ -68,10 +69,9 @@ export const AuthProvider = ({ children, e }: { children: React.ReactNode; e: an
       setUser(decodedTokens)
       setAuthTokens(tokens)
     } else if (window.location.pathname === '/destination') {
-      navigate('/login')
-      window.location.reload()
+      window.location.pathname = '/login'
     }
-  }, [e, navigate])
+  }, [e])
 
   const logout = () => {
     setUser(null)
@@ -105,23 +105,25 @@ export const AuthProvider = ({ children, e }: { children: React.ReactNode; e: an
 
   const contextData = {
     user: user,
-    loginUser: loginUser,
+    loginUser: loginUser as (e: Event) => Promise<Response>,
     logout: logout,
-    registerUser: registerUser,
+    registerUser: registerUser as unknown as (e: Event) => Promise<Response>,
     authTokens: authTokens
   }
+
+  const updateTokenCallback = useCallback(updateToken, [authTokens, updateToken])
 
   useEffect(() => {
     if (authTokens) {
       const interval = setInterval(
         () => {
-          updateToken()
+          updateTokenCallback()
         },
         1000 * 60 * 5
       )
       return () => clearInterval(interval)
     }
-  }, [authTokens])
+  }, [updateTokenCallback, authTokens])
 
   return <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
 }

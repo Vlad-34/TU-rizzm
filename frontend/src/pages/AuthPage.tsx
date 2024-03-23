@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { FormEventHandler, useContext, useState } from 'react'
 import AuthContext from '../context/AuthContext'
 import { TextField } from '@mui/material'
 
@@ -49,7 +49,8 @@ const hoverStyle = {
 
 const Auth = ({ haveAccount }: { haveAccount?: boolean }) => {
   const authContext = useContext(AuthContext)
-  const { loginUser, registerUser } = authContext || {}
+  const loginUser = authContext?.loginUser as unknown as FormEventHandler<HTMLFormElement> | undefined
+  const registerUser = authContext?.registerUser as unknown as FormEventHandler<HTMLFormElement> | undefined
   const [isHovered, setIsHovered] = useState(false)
 
   return (
