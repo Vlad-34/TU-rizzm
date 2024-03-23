@@ -7,5 +7,7 @@ class Reservation(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
-    current_date = date.today()
+    reservation_date = date.today()
     
+    def __str__(self):
+        return self.destination.name + ' | ' + str(self.reservation_date)

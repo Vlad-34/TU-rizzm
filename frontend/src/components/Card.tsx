@@ -104,16 +104,15 @@ const Cards = ({ values, id, booking }: { values: CardInfo[]; id?: string; booki
                 <Icon src='src/assets/placeholder.png' />
                 {item.location}
               </p>
-
+              <p>
+                <Icon src='src/assets/price-tag.png' />${item.price} / night
+              </p>
               {item.offer !== 0 && item.offer !== null && item.offer !== undefined && (
                 <p style={{ color: '#d2042d' }}>
                   <Icon src='src/assets/price-tag.png' />
                   Offer: {item.offer}% off
                 </p>
               )}
-              <p>
-                <Icon src='src/assets/price-tag.png' />${item.price} / night
-              </p>
               <p>
                 <Icon src='src/assets/user.png' />
                 {item.capacity} people

@@ -10,4 +10,4 @@ class Destination(models.Model):
     capacity = models.IntegerField(null=True, blank=True)
     
     def __str__(self): 
-        return self.name + ' | ' + self.description
+        return self.name + ' | ' + self.location

@@ -24,7 +24,6 @@ const Destination = ({ location }: { location: string }) => {
   const getDestinationsAndReservations = async () => {
     try {
       const tokens = JSON.parse(localStorage.getItem('tokens') || '{}')
-      console.log(tokens.access)
       const reservationsResponse = await fetch(`http://localhost:8000/api/v1/reservations/`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${tokens.access}` }

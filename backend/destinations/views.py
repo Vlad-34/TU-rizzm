@@ -11,7 +11,6 @@ class DestinationFilter(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, location, format=None):
-        print(f"Location: {location}")
         if location:
             destinations = Destination.objects.filter(Q(location__iexact=location) | 
                 Q(location__icontains=location) | Q(location__istartswith=location))
@@ -24,13 +23,7 @@ class DestinationFilter(APIView):
             return Response({"error": "No destinations found."}, status=status.HTTP_404_NOT_FOUND)
 
 class DestinationList(APIView):
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [IsAuthenticated()]  # For GET requests, require authentication
-        elif self.request.method == 'POST':
-            return [IsAdminUser()]       # For POST requests, require admin privileges
-        else:
-            return []
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         destinations = Destination.objects.all()
@@ -46,7 +39,7 @@ class DestinationList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DestinationDetail(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self, id, format=None):
         try:

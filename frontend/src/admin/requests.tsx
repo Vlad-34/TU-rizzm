@@ -17,7 +17,10 @@ function formDataMap(data: CardInfo) {
 export const add = async (value: CardInfo) => {
   const response = await fetch('http://localhost:8000/api/v1/destinations/', {
     method: 'POST',
-    body: formDataMap(value)
+    body: formDataMap(value),
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('tokens')!).access}`
+    }
   }).catch((error: Error) => {
     console.error('Error:', error.message)
   })
@@ -33,7 +36,10 @@ export const update = async (value: CardInfo) => {
   const param = encodeURIComponent(value.name)
   const response = await fetch(`http://localhost:8000/api/v1/destinations/${param}/`, {
     method: 'PUT',
-    body: formDataMap(value)
+    body: formDataMap(value),
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('tokens')!).access}`
+    }
   }).catch((error) => {
     console.error('Error:', error)
   })
@@ -48,7 +54,10 @@ export const update = async (value: CardInfo) => {
 export const remove = async (value: CardInfo) => {
   const param = encodeURIComponent(value.name)
   await fetch(`http://localhost:8000/api/v1/destinations/${param}/`, {
-    method: 'DELETE'
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('tokens')!).access}`
+    }
   }).catch((error) => {
     console.error('Error:', error)
   })
