@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { jwtDecode } from 'jwt-decode'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { User } from '../dataTypes/interfaces'
 
 const ContentCard = styled.div`
@@ -65,17 +65,25 @@ const Booking = () => {
   const tokens = JSON.parse(localStorage.getItem('tokens')!)
   const destination = JSON.parse(localStorage.getItem('destination')!)
   const decodedTokens = jwtDecode(tokens.access) as User
-  const localStorageStartValue = localStorage.getItem('startValue')
-  const localStorageEndValue = localStorage.getItem('endValue')
+  const startValue = localStorage.getItem('startValue') ? dayjs(localStorage.getItem('startValue')) : null
+  const endValue = localStorage.getItem('endValue') ? dayjs(localStorage.getItem('endValue')) : null
 
-  const startValue = localStorageStartValue ? dayjs(localStorage.getItem('startValue')! as unknown as Dayjs) : null
-  const endValue = localStorageEndValue ? dayjs(localStorage.getItem('endValue')! as unknown as Dayjs) : null
+  const daysDiff = startValue && endValue && startValue.isValid() && endValue.isValid() ? endValue.diff(startValue, 'day') : 0
+
+  const price = destination?.price ?? 0
+  const capacity = destination?.capacity ?? 0
+  const offerPercentage = destination?.offer ?? 0
+  const discountFactor = 1 - offerPercentage / 100
+
+  const totalPrice = price * capacity * discountFactor * Math.max(daysDiff, 0)
+
   const reservation = {
-    destination: destination?.id,
+    destination: destination?.id ?? null,
     start_date: startValue?.format('YYYY-MM-DD'),
     end_date: endValue?.format('YYYY-MM-DD'),
-    price: destination?.price * destination?.capacity * (1 - (destination?.offer / 100 ?? 0)) * (endValue?.diff(startValue, 'day') ?? 0)
+    price: totalPrice
   }
+
   return (
     <ContentCard>
       <p>user email: {decodedTokens?.email}</p>
@@ -86,10 +94,7 @@ const Booking = () => {
         selected interval: {startValue?.format('dddd DD MMMM YYYY')} - {endValue?.format('dddd DD MMMM YYYY')}
       </p>
       {destination?.offer && <p>offer: {destination?.offer}</p>}
-      <p>
-        total price:{' '}
-        {destination?.price * destination?.capacity * (1 - (destination?.offer / 100 ?? 0)) * (endValue?.diff(startValue, 'day') ?? 0)}
-      </p>
+      <p>total price: {totalPrice}</p>
       <InfoButton
         onClick={() => {
           makeReservation(reservation)
