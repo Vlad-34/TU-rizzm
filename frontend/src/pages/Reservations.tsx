@@ -36,6 +36,7 @@ const Reservations = () => {
             <th>Destination</th>
             <th>Start Date</th>
             <th>End Date</th>
+            <th>Reservation Date</th>
             <th>Price</th>
           </tr>
         </thead>
@@ -46,6 +47,7 @@ const Reservations = () => {
                 <td>{reservation.destination}</td>
                 <td>{String(reservation.start_date)}</td>
                 <td>{String(reservation.end_date)}</td>
+                <td>{String(reservation.reservation_date)}</td>
                 <td>{reservation.price}</td>
               </tr>
             )

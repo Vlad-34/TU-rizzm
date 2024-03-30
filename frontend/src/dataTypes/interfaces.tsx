@@ -28,5 +28,6 @@ export interface Reservation {
   destination: number
   start_date: Dayjs
   end_date: Dayjs
+  reservation_date: Dayjs
   price: number
 }
