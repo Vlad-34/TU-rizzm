@@ -5,7 +5,7 @@ from .models import Destination
 from .serializers import DestinationSerializer
 from django.db.models import Q
 from urllib.parse import unquote
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 
 class DestinationFilter(APIView):
     permission_classes = [IsAuthenticated]
